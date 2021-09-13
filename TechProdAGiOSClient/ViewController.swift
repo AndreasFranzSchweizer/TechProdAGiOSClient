@@ -56,7 +56,7 @@ class ViewController: UIViewController {
         let clientID = "CocoaMQTT"
 
         //2. Definition of mqtt broker connection
-        mqtt = CocoaMQTT(clientID: clientID, host: "5d01c8fd6867425abfd9bd41ea2ac19d.s2.eu.hivemq.cloud", port: 8883)
+        mqtt = CocoaMQTT(clientID: clientID, host: "broker.hivemq.com", port: 1883)
         
         //3. Setup the username and password if supported otherwise do not set
         mqtt!.username = "TechprodAG"
@@ -65,12 +65,6 @@ class ViewController: UIViewController {
         //4. Definition of will message topic and connection
         mqtt!.willMessage = CocoaMQTTWill(topic: "/sensors/temperature", message: "dieout")
         mqtt!.keepAlive = 60
-        
-        mqtt!.enableSSL = true
-        
-        mqtt!.logLevel = .debug
-        
-        mqtt!.cleanSession = true
         
         connected = mqtt!.connect()
         if connected{
@@ -86,19 +80,20 @@ extension ViewController: CocoaMQTTDelegate {
     
     //1. Connection with Broker, time to subscribe to a topic
     func mqtt(_ mqtt: CocoaMQTT, didConnectAck ack: CocoaMQTTConnAck) {
-        //mqtt.subscribe("testtopic/#")
+        mqtt.subscribe("techprodag/#")
         //print("subscribed")
         //mqtt.publish(CocoaMQTTMessage(topic: "testtopic/test", string: "message", qos: .qos2))
     }
 
     //2. Reception of mqtt message in the topic "/sensors/temperature"
     func mqtt(_ mqtt: CocoaMQTT, didReceiveMessage message: CocoaMQTTMessage, id: UInt16 ){
-        datareceived.text = message.string!
-        print("received")
+        datareceived.text = message.string! + "\r\n"
+        datareceived.text += message.topic
     }
     
     // Other required methods for CocoaMQTTDelegate
-    func mqtt(_ mqtt: CocoaMQTT, didReceive trust: SecTrust, completionHandler: @escaping (Bool) -> Void) {}
+    func mqtt(_ mqtt: CocoaMQTT, didReceive trust: SecTrust, completionHandler: @escaping (Bool) -> Void) {
+    }
     func mqtt(_ mqtt: CocoaMQTT, didConnect host: String, port: Int) {print(host); print(port);print("ok")}
     func mqtt(_ mqtt: CocoaMQTT, didSubscribeTopic topics: [String]) {}
     func mqtt(_ mqtt: CocoaMQTT, didPublishMessage message: CocoaMQTTMessage, id: UInt16) {}

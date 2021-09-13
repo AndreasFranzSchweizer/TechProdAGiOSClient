@@ -6,7 +6,7 @@ target 'TechProdAGiOSClient' do
   use_frameworks!
 
   # Pods for TechProdAGiOSClient
-  pod 'CocoaMQTT'
+  pod 'CocoaMQTT', '1.2.3'
   pod 'CocoaAsyncSocket'
   
   target 'TechProdAGiOSClientTests' do
